@@ -5,7 +5,7 @@ COPY ${source:-obj/Docker/publish} .
 EXPOSE 80
 
 # Enable WCF 
-RUN powershell -Command Add-WIndowsFeature NET-WCF-HTTP-Activation45
+#RUN powershell -Command Add-WIndowsFeature NET-WCF-HTTP-Activation45
 
 
 

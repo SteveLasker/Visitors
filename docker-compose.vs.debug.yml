@@ -36,3 +36,4 @@ services:
     ports:
       - "1443:1443"
 
+      #attach_dbs: "[{'dbName':'visitors','dbFiles':['C:\\temp\\visitors.mdf','C:\\temp\\visitors_log.ldf']}]"
