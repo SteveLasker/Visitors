@@ -1,21 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
   <PropertyGroup Label="Globals">
-    <ProjectVersion>1.1</ProjectVersion>
+    <ProjectVersion>2.0</ProjectVersion>
     <ProjectGuid>19fc5ccb-6ca2-4aa1-87aa-6e6b84e16d53</ProjectGuid>
     <DockerLaunchBrowser>True</DockerLaunchBrowser>
     <DockerServiceUrl>http://{ServiceIPAddress}/noauth</DockerServiceUrl>
     <DockerServiceName>mycompany.visitors.web</DockerServiceName>
   </PropertyGroup>
+  <PropertyGroup>
+    <DockerTargetOS>Windows</DockerTargetOS>
+  </PropertyGroup>
   <ItemGroup>
-    <None Include="docker-compose.ci.build.yml" />
     <None Include="docker-compose.override.yml">
-      <DependentUpon>docker-compose.yml</DependentUpon>
-    </None>
-    <None Include="docker-compose.vs.debug.yml">
-      <DependentUpon>docker-compose.yml</DependentUpon>
-    </None>
-    <None Include="docker-compose.vs.release.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="docker-compose.yml" />

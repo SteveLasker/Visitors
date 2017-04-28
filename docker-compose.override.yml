@@ -9,10 +9,17 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "80"
+
+  sql:
+    image: microsoft/mssql-server-windows
+    environment:
+      SA_PASSWORD: "P@ssw0rd1"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1443:1443"
+
 networks:
   default:
     external:
       name: nat
-
-
 

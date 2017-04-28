@@ -158,14 +158,14 @@
         /// <returns><see cref="MyCompany.Visitors.Data.Repositories.IVisitRepository"/></returns>
         public async Task<IEnumerable<Visit>> GetUserVisitsAsync(string employeeEmail, string filter, PictureType pictureType, int pageSize, int pageCount)
         {
-            var dateFilter = DateTime.UtcNow.AddHours(-1);
+            //var dateFilter = DateTime.UtcNow.AddHours(-1);
 
             var result = await _context.Visits
                     .Where(q => q.Employee.Email == employeeEmail
                     &&
                     (String.IsNullOrEmpty(filter) || q.Comments.Contains(filter) || (q.Visitor.FirstName + " " + q.Visitor.LastName).Contains(filter))
-                    &&
-                    q.VisitDateTime >= dateFilter
+                    //&&
+                    //q.VisitDateTime >= dateFilter
                     )
                     .OrderBy(q => q.VisitDateTime)
                     .Select(v => new

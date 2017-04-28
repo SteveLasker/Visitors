@@ -24,44 +24,30 @@ namespace MyCompany.Visitors.Data.Infrastructure.Initializers
         private string _smallPicturePath = "FakeImages\\{0} - small.jpg";
         private List<string> _employeeEmails = new List<string>() 
         {
-            String.Format("Andrew.Davis@{0}", tenant),
-            String.Format("Christen.Anderson@{0}", tenant),
-            String.Format("David.Alexander@{0}", tenant),
-            String.Format("Robin.Counts@{0}", tenant),
-            String.Format("Thomas.Andersen@{0}", tenant),
-            String.Format("Josh.Bailey@{0}", tenant),
-            String.Format("Adam.Barr@{0}", tenant),
-            String.Format("Christa.Geller@{0}", tenant),
-            String.Format("Carole.Poland@{0}", tenant),
-            String.Format("Cristina.Potra@{0}", tenant),
+            String.Format("Winston.Ochs@{0}", tenant),
+            String.Format("Julia.Fernandez@{0}", tenant),
+            String.Format("Natasha.Guthrie@{0}", tenant),
+            String.Format("Ronnie.Bayne@{0}", tenant),
+            String.Format("Emily.Marrow@{0}", tenant),
         };
         private List<string> _employeeNames = new List<string>() 
         {
-            "Andrew Davis",
-            "Christen Anderson", 
-            "David Alexander",
-            "Robin Counts",
-            "Thomas Andersen", 
-            "Josh Bailey", 
-            "Adam Barr",
-            "Christa Geller",
-            "Carole Poland",
-            "Cristina Potra",
+            "Winston Ochs",
+            "Julia Fernandez",
+            "Natasha Guthrie",
+            "Ronnie Bayne",
+            "Emily Marrow"
         };
 
         private List<string> _visitorNames = new List<string>()
         {
-            "Scott Hunter",
-            "Scott Woodgate",
-            "Craig Kitterman",
-            "Violeta Arroyo",
-            "Phil Webb",
-            "Rob Caron",
-            "Matt Mostad",
-            "Adriana Bors",
-            "Beth Massi",
-            "Carlos Zimmermann",
-            "Mitra Azizirad"
+            "Arthur Beeson",
+            "Noreen Chang",
+            "Carissa Pace",
+            "Gail Banks",
+            "Leah Tran",
+            "Lydia Short",
+            "Michael Witcher"
         };
 
         /// <summary>
@@ -72,10 +58,10 @@ namespace MyCompany.Visitors.Data.Infrastructure.Initializers
         {
             CreateTeamManagers(context);
 
-            CreateEmployees(context, 2);
+            CreateEmployees(context, 5);
 
-            CreateTeamManagersNYC(context);
-            CreateEmployeesForNYCTeams(context);
+            //CreateTeamManagersNYC(context);
+            //CreateEmployeesForNYCTeams(context);
 
             CreateEmployeePictures(context);
 
@@ -199,14 +185,33 @@ namespace MyCompany.Visitors.Data.Infrastructure.Initializers
                 var name = _visitorNames[i];
                 var split = name.Split(' ');
 
+                string url = "";
+                string company = "";
+
+                if (i % 3 == 0)
+                {
+                    company = "Relecloud";
+                    url = "relecloud.com";
+                }
+                else if (i % 2 == 0)
+                {
+                    company = "VanArsdel, Ltd.";
+                    url = "vanarsdelltd.com";
+                }
+                else
+                {
+                    company = "Woodgrove Bank";
+                    url = "woodgrovebank.com";
+                }
+
                 context.Visitors.Add(new Visitor()
                     {
                         VisitorId = id,
                         FirstName = split[0],
                         LastName = split[1],
-                        Email = name.Replace(" ", ".") + "@mycompanydemos.com",
+                        Email = name.Replace(" ", ".") + "@" + url,
                         Position = GetPosition(i),
-                        Company = "Microsoft",
+                        Company = company,
                         CreatedDateTime = DateTime.UtcNow,
                         LastModifiedDateTime = DateTime.UtcNow
                     }
@@ -238,37 +243,34 @@ namespace MyCompany.Visitors.Data.Infrastructure.Initializers
 
         private void CreateVisits(MyCompanyContext context)
         {
-            var employeesIds = context.Employees.Select(e => e.EmployeeId).ToList();
+            var employeeIds = context.Employees.Select(e => e.EmployeeId).ToList();
 
-            int cesardlId = 101;
-            int jayschId = 102;
-            int orvilleId = 103;
-            int egamma = 104 ; 
-
-            List<int> _employeeNYCIds = new List<int>() 
-            {
-                cesardlId, jayschId, orvilleId, egamma
-            };
-
+            var startEmployeeId = 0;
             foreach (var visitor in context.Visitors)
             {
-                int visits = _randomize.Next(5, 10);
+                int visits = _randomize.Next(3, 7);
 
-                DateTime visitDate = new DateTime(2014, 05, 17, 12, 0, 0).ToUniversalTime();
-                DateTime launchDt = new DateTime(2014, 05, 12, 19, 0, 0).ToUniversalTime();
-                DateTime createdDateTime = new DateTime(2013, 11, 13);
+                DateTime visitDate = DateTime.UtcNow;
+
                 for (int i = 0; i < visits; i++)
                 {
-                    int index = _randomize.Next(0, 3);
-                    int employeeId = _employeeNYCIds.ElementAt(index);
+                    int employeeId = employeeIds.ElementAt(startEmployeeId);
+                    if(startEmployeeId >= employeeIds.Count()-1)
+                    {
+                        startEmployeeId = 0;
+                    }
+                    else
+                    {
+                        startEmployeeId++;
+                    }
+
                     int days = _randomize.Next(-2, 15);
                     int minutes = _randomize.Next(5, 480);
 
                     var visit = new Visit()
                     {
                         CreatedDateTime = DateTime.UtcNow,
-                        VisitDateTime = i == 0 
-                                    && employeeId == cesardlId ? launchDt : visitDate.AddDays(days).AddMinutes(minutes),
+                        VisitDateTime = visitDate.AddDays(days).AddMinutes(minutes),
                         Comments = string.Empty,
                         EmployeeId = employeeId,
                         VisitorId = visitor.VisitorId,
@@ -355,67 +357,53 @@ namespace MyCompany.Visitors.Data.Infrastructure.Initializers
         private List<string> _employeeEmailsNYC = new List<string>() 
         {
             // Managers
-            String.Format("cesardl@{0}", tenant),
-            String.Format("Jaysch@{0}", tenant),
-            String.Format("orvillem@{0}", tenant),
-            String.Format("egamma@{0}", tenant),
+            String.Format("winston.ochs@{0}", tenant),
+            //String.Format("Jaysch@{0}", tenant),
+            //String.Format("orvillem@{0}", tenant),
+            //String.Format("egamma@{0}", tenant),
 
             // Equipo 1
-            String.Format("bharry@{0}", tenant),
-            String.Format("somase@{0}", tenant),
-            String.Format("scottgu@{0}", tenant),
-            String.Format("nichers@{0}", tenant),
+            String.Format("naomi.nichols@{0}", tenant),
+            //String.Format("somase@{0}", tenant),
+            //String.Format("scottgu@{0}", tenant),
+            //String.Format("nichers@{0}", tenant),
 
             
             // Equipo 2
-            String.Format("bethma@{0}", tenant),
-            String.Format("epadrino@{0}", tenant),
-            String.Format("seanla@{0}", tenant),
-            String.Format("jnak@{0}", tenant),
+            String.Format("natasha.guthrie@{0}", tenant),
+            //String.Format("epadrino@{0}", tenant),
+            //String.Format("seanla@{0}", tenant),
+            //String.Format("jnak@{0}", tenant),
 
             // Equipo 3
-            String.Format("cesardl@{0}", tenant),
-            String.Format("davidcsa@{0}", tenant),
-            String.Format("dmitryly@{0}", tenant),
-            String.Format("briankel@{0}", tenant),
+            String.Format("ronnie.bayne@{0}", tenant),
+            //String.Format("davidcsa@{0}", tenant),
+            //String.Format("dmitryly@{0}", tenant),
+            //String.Format("briankel@{0}", tenant),
 
 
             // Equipo 4
-            String.Format("habibh@{0}", tenant),
-            String.Format("Brandon.Bray@{0}", tenant),
-            String.Format("David.Salgado@{0}", tenant),
-            String.Format("ed.blankenship@{0}", tenant),
+            String.Format("emily.marrow@{0}", tenant),
+            //String.Format("Brandon.Bray@{0}", tenant),
+            //String.Format("David.Salgado@{0}", tenant),
+            //String.Format("ed.blankenship@{0}", tenant),
         };
 
         private List<string> _employeeNamesNYC = new List<string>() 
         {
-            "Cesar de_la_Torre",
-            "Jay Schmelzer",
-            "Orville McDonald",
-            "Erich Gamma",
-            "Brian Harry",
-            "S. Somasegar",
-            "Scott Guthrie",
-            "Nicole Herskowitz",
-            "Beth Massi",
-            "Evelyn Padrino",
-            "Sean Laberee",
-            "Jim Nakashima",
-            "Cesar de_la_Torre",
-            "David Carmona",
-            "Dmitry Lyalin",
-            "Brian Keller",
-            "Habib Heydarian",
-            "Brandon Bray",
-            "David Salgado",
-            "Ed Blankenship",
+            "Winston Ochs",
+            "Naomi Nichols",
+            "Natasha Guthrie",
+            "Ronnie Bayne",
+            "Emily Marrow"
             };
 
         int startId = 100;
 
         void CreateTeamManagersNYC(MyCompanyContext context)
         {
-            int managersCount = 4;
+            //ToDO: back to 4
+            int managersCount = 1;
 
             for (int i = 0; i < managersCount; i++)
             {
@@ -440,15 +428,16 @@ namespace MyCompany.Visitors.Data.Infrastructure.Initializers
 
         void CreateEmployeesForNYCTeams(MyCompanyContext context)
         {
-            int teamOneId = context.Teams.OrderBy(t => t.TeamId).Skip(1).First().TeamId; // Cesar de_la_Torre
-            int teamTwoId = context.Teams.OrderBy(t => t.TeamId).Skip(2).First().TeamId; // Jay Schmelzer
-            int teamThreeId = context.Teams.OrderBy(t => t.TeamId).Skip(3).First().TeamId; // Orville McDonald
-            int teamFourId = context.Teams.OrderBy(t => t.TeamId).Skip(4).First().TeamId; // Erich Gamma
+            int teamOneId = context.Teams.OrderBy(t => t.TeamId).Skip(1).First().TeamId; // Winston Ochs
+            //int teamTwoId = context.Teams.OrderBy(t => t.TeamId).Skip(2).First().TeamId; // Jay Schmelzer
+            //int teamThreeId = context.Teams.OrderBy(t => t.TeamId).Skip(3).First().TeamId; // Orville McDonald
+            //int teamFourId = context.Teams.OrderBy(t => t.TeamId).Skip(4).First().TeamId; // Erich Gamma
 
-            CreateEmployeesNYC(context, teamOneId, 5, 8);
-            CreateEmployeesNYC(context, teamTwoId, 9, 12);
-            CreateEmployeesNYC(context, teamThreeId, 13, 16);
-            CreateEmployeesNYC(context, teamFourId, 17, 20);
+            // ToDo: fix the segment 
+            CreateEmployeesNYC(context, teamOneId, 1, 4);
+            //CreateEmployeesNYC(context, teamTwoId, 9, 12);
+            //CreateEmployeesNYC(context, teamThreeId, 13, 16);
+            //CreateEmployeesNYC(context, teamFourId, 17, 20);
         }
 
         void CreateEmployeesNYC(MyCompanyContext context, int teamId, int startIndex, int endIndex)
